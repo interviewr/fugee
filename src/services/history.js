@@ -1,6 +1,5 @@
-import { useRouterHistory } from 'react-router'
-import { createHistory } from 'history' // dep of react-router
+import createBrowserHistory from 'history/createBrowserHistory' // dep of react-router
 
-export default useRouterHistory(createHistory)({
+export default createBrowserHistory({
   basename: URI_PREFIX || ''
 })

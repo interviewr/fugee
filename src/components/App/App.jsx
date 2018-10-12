@@ -38,15 +38,19 @@ class App extends PureComponent {
       PropTypes.object
     ]),
     joinRoom: PropTypes.func.isRequired,
-    params: PropTypes.object.isRequired
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        roomId: PropTypes.string.isRequired
+      })
+    }).isRequired
   };
 
   state = {
     isControlsVisible: false
   };
 
-  componentWillMount () {
-    this.props.joinRoom(this.props.params.roomId)
+  componentDidMount () {
+    this.props.joinRoom(this.props.match.params.roomId)
   }
 
   handleMouseMove = (event) => {

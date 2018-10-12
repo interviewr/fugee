@@ -3,7 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
-import { Router, Route } from 'react-router'
+import { Router, Switch, Route } from 'react-router'
 import store from './store/configureStore'
 import history from './services/history'
 import './globalStyles'
@@ -17,9 +17,11 @@ ReactDOM.render(
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <Router history={history}>
-        <Route path='/' component={Login} />
-        <Route path=':roomId' component={App} />
-        <Route path='/feedback' component={() => (<div>test</div>)} />
+        <Switch>
+          <Route exact path='/' component={Login} />
+          <Route path='/feedback' component={() => (<div>test</div>)} />
+          <Route path='/:roomId' component={App} />
+        </Switch>
       </Router>
     </ThemeProvider>
   </Provider>,
