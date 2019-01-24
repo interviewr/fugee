@@ -1,5 +1,4 @@
 const webpack = require('webpack')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const { dir, config, rules, plugins } = require('./base')
 
 const webpackConfig = Object.assign({}, config, {
@@ -14,20 +13,12 @@ const webpackConfig = Object.assign({}, config, {
   module: {
     rules
   },
+  // optimization.minimize - uses terser-webpack-plugin under the hood
   plugins: [
     ...plugins,
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
-      }
-    }),
-    new UglifyJsPlugin({
-      sourceMap: true,
-      uglifyOptions: {
-        output: {
-          comments: false,
-          beautify: false
-        }
       }
     })
   ]

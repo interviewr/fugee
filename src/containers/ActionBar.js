@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import ActionsBar from '../components/ActionBar'
+import ActionsBar from '../components/molecules/ActionBar'
 import {
   MUTE_PENDING,
   UNMUTE_PENDING,

@@ -10,7 +10,7 @@ import './globalStyles'
 
 import theme from './themes/default'
 
-import Login from './components/Login'
+import Login from './components/pages/Login'
 import App from './containers/App'
 
 ReactDOM.render(

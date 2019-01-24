@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { JOIN_ROOM_PENDING } from '../actions'
-import App from '../components/App'
+import App from '../components/pages/App'
 
 const mapStateToProps = state => ({
   pinnedPeerId: state.peers.pinnedPeerId,

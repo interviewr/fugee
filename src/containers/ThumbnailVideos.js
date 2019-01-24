@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { SET_PINNED_PEER } from '../actions'
-import ThumbnailVideos from '../components/ThumbnailVideos'
+import ThumbnailVideos from '../components/molecules/ThumbnailVideos'
 
 const mapStateToProps = state => ({
   peers: state.peers.ids,

@@ -1,3 +1,6 @@
+/**
+ * Action indicating user trying to join the room
+ */
 export const JOIN_ROOM_PENDING = 'JOIN_ROOM_PENDING'
 export const JOIN_ROOM_SUCCESS = 'JOIN_ROOM_SUCCESS'
 export const JOIN_ROOM_ERROR = 'JOIN_ROOM_ERROR'
