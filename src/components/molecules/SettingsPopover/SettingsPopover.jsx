@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 import { Manager, Reference, Popper } from 'react-popper'
 import styled from 'styled-components'
 import Checkbox from '../../molecules/Checkbox'
@@ -49,12 +48,13 @@ const Arrow = styled.div`
   }
 `
 
-const SettingsPopover = React.memo((props) => {
+const SettingsPopover = () => {
+  const [isOpen, tooglePopover] = useState(false)
   const [isAudioEnabled, toggleAudio] = useState(false)
   const [isVideoEnabled, toggleVideo] = useState(false)
 
-  const handleToggleClick = isOpen => () => {
-    props.onToggleClick(isOpen)
+  const handleToggleClick = isPopoverOpen => () => {
+    tooglePopover(isPopoverOpen)
   }
 
   return (
@@ -62,15 +62,15 @@ const SettingsPopover = React.memo((props) => {
       <Reference>
         {({ ref }) => (
           <Toggle
-            innerRef={ref}
-            onClick={handleToggleClick(!props.isOpen)}
+            ref={ref}
+            onClick={handleToggleClick(!isOpen)}
           />)}
       </Reference>
-      {props.isOpen &&
+      {isOpen &&
         <Popper placement='bottom'>
           {({ ref, style, placement, arrowProps }) => (
             <BodyContainer
-              innerRef={ref}
+              ref={ref}
               style={style}
               data-placement={placement}
             >
@@ -85,7 +85,7 @@ const SettingsPopover = React.memo((props) => {
                 onChange={toggleVideo}
               />
               <Arrow
-                innerRef={arrowProps.ref}
+                ref={arrowProps.ref}
                 style={arrowProps.style}
                 data-placement={placement}
               />
@@ -94,15 +94,6 @@ const SettingsPopover = React.memo((props) => {
       }
     </Manager>
   )
-})
-
-SettingsPopover.propTypes = {
-  isOpen: PropTypes.bool,
-  onToggleClick: PropTypes.func.isRequired
-}
-
-SettingsPopover.defaultProps = {
-  isOpen: false
 }
 
 export default SettingsPopover

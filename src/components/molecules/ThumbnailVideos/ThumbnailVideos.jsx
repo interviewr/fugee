@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import SettingsPopover from '../SettingsPopover'
@@ -18,16 +18,14 @@ const StyledVideo = styled(Video)`
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  border: 3px solid lightgreen;
+  border: 1px solid lightgreen;
 `
 
 const VideoWrapper = styled.div`
   position: relative;
 `
 
-const ThumbnailVideos = (props) => {
-  const [isSettingsOpen, toggleSettings] = useState(false)
-
+const ThumbnailVideos = React.memo((props) => {
   const handleThumbnailClick = peerId => {
     if (props.pinnedPeerId !== peerId) {
       props.setPinnedPeer(peerId)
@@ -45,15 +43,12 @@ const ThumbnailVideos = (props) => {
               peerId={peerId}
               onClick={() => handleThumbnailClick(peerId)}
             />
-            <SettingsPopover
-              isOpen={isSettingsOpen}
-              onToggleClick={toggleSettings}
-            />
+            <SettingsPopover />
           </VideoWrapper>
         ))}
     </ThumbnailVideosContainer>
   )
-}
+})
 
 ThumbnailVideos.propTypes = {
   peers: PropTypes.array,

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { JOIN_ROOM_PENDING } from '../actions'
-import App from '../components/pages/App'
+import VideoConferenceTab from '../components/organisms/VideoConferenceTab'
 
 const mapStateToProps = state => ({
   pinnedPeerId: state.peers.pinnedPeerId,
@@ -11,4 +11,4 @@ const mapDispatchToProps = dispatch => ({
   joinRoom: roomId => dispatch({ type: JOIN_ROOM_PENDING, payload: { roomId } })
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(VideoConferenceTab)

@@ -16,23 +16,23 @@ import {
 import StreamStore from '../services/StreamStore'
 import myPeerId from '../constants'
 
-function togglePeerAudio (peerId, isEnable) {
+function mutePeerAudio (peerId) {
   const audioStreamTracks = StreamStore.get(peerId).getAudioTracks()
   audioStreamTracks.forEach((track) => {
-    track.enabled = isEnable
+    track.stop()
   })
 }
 
-function togglePeerVideo (peerId, isEnable) {
+function pausePeerVideo (peerId) {
   const videoStreamTracks = StreamStore.get(peerId).getVideoTracks()
   videoStreamTracks.forEach((track) => {
-    track.enabled = isEnable
+    track.stop()
   })
 }
 
 function * mute () {
   try {
-    togglePeerAudio(myPeerId, false)
+    mutePeerAudio(myPeerId)
     yield put({ type: MUTE_SUCCESS })
   } catch (error) {
     yield put({ type: MUTE_ERROR, payload: { error } })
@@ -41,7 +41,7 @@ function * mute () {
 
 function * unmute () {
   try {
-    togglePeerAudio(myPeerId, true)
+    // TODO: unmute audio stream tracks
     yield put({ type: UNMUTE_SUCCESS })
   } catch (error) {
     yield put({ type: UNMUTE_ERROR, payload: { error } })
@@ -50,7 +50,7 @@ function * unmute () {
 
 function * pauseVideo () {
   try {
-    togglePeerVideo(myPeerId, false)
+    pausePeerVideo(myPeerId)
     yield put({ type: PAUSE_VIDEO_SUCCESS })
   } catch (error) {
     yield put({ type: PAUSE_VIDEO_ERROR, payload: { error } })
@@ -59,7 +59,7 @@ function * pauseVideo () {
 
 function * resumeVideo () {
   try {
-    togglePeerVideo(myPeerId, true)
+    // TODO: resume video stream tracks
     yield put({ type: RESUME_VIDEO_SUCCESS })
   } catch (error) {
     yield put({ type: RESUME_VIDEO_ERROR })

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Video from '../../atoms/Video'
@@ -27,15 +27,11 @@ const MainVideo = styled(Video)`
   user-select: none;
 `
 
-const App = (props) => {
+const VideoConferenceTab = (props) => {
   let isMouseNearToolBar_
   let isMouseNearActionsBar_
   let controlsTimeout
   const [isControlsVisible, toogleControls] = useState(false)
-
-  useEffect(() => {
-    props.joinRoom(props.match.params.roomId) // TODO: this will lead to constant joining the room
-  })
 
   const handleMouseMove = (event) => {
     isMouseNearToolBar_ = isMouseNearToolBar(event)
@@ -81,7 +77,7 @@ const App = (props) => {
   )
 }
 
-App.propTypes = {
+VideoConferenceTab.propTypes = {
   activePeerId: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
@@ -89,13 +85,7 @@ App.propTypes = {
   pinnedPeerId: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
-  ]),
-  joinRoom: PropTypes.func.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      roomId: PropTypes.string.isRequired
-    })
-  }).isRequired
+  ])
 }
 
-export default App
+export default VideoConferenceTab

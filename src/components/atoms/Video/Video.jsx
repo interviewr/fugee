@@ -5,7 +5,7 @@ import StreamStore from '../../../services/StreamStore'
 
 const StyledVideo = styled.video``
 
-const Video = (props) => {
+const Video = React.memo((props) => {
   const attachStream = (id, node) => {
     if (node) {
       node.srcObject = StreamStore.get(id)
@@ -16,11 +16,11 @@ const Video = (props) => {
     <StyledVideo
       autoPlay
       className={props.className}
-      innerRef={(c) => { attachStream(props.peerId, c) }}
+      ref={(c) => { attachStream(props.peerId, c) }}
       onClick={props.onClick}
     />
   )
-}
+})
 
 Video.propTypes = {
   peerId: PropTypes.string,

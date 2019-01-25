@@ -26,9 +26,9 @@ const ActionBarList = styled.ul`
   list-style: none;
 `
 
-const ActionBarListItem = styled.li.attrs({
-  className: props => props.isActive ? 'active' : ''
-})`
+const ActionBarListItem = styled.li.attrs(props => ({
+  className: props.isActive ? 'active' : ''
+}))`
   cursor: pointer;
   width: 50px;
   height: 50px;

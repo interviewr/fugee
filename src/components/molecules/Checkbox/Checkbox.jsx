@@ -28,10 +28,10 @@ const CheckboxContainer = styled.label`
   white-space: nowrap;
 `
 
-const Input = styled.input.attrs({
+const Input = styled.input.attrs(() => ({
   readOnly: true,
   type: 'checkbox'
-})`
+}))`
   position: absolute;
   height: 0;
   width: 0;
@@ -39,9 +39,9 @@ const Input = styled.input.attrs({
   opacity: 0;
 `
 
-const Check = styled.div.attrs({
-  className: props => props.checked ? 'checked' : ''
-})`
+const Check = styled.div.attrs(props => ({
+  className: props.checked ? 'checked' : ''
+}))`
   cursor: ${props => props.disabled ? 'auto' : 'pointer'};
   position: relative;
   display: inline-block;
