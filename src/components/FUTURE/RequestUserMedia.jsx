@@ -77,83 +77,75 @@ class RequestUserMedia extends Component {
 
       this.props.deviceCaptureRequest(!!videoConstraints, !!audioConstraints)
 
-      if (!audioConstraints) {
-        return
+      if (audioConstraints) {
+        await this.props.removeAllMedia('audio')
       }
 
-      await this.props.removeAllMedia('audio')
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: audioConstraints,
+        video: videoConstraints
+      })
+    } catch (error) {
+      this.errorCount += 1
 
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: audioConstraints,
-          video: videoConstraints
-        })
-      } catch (error) {
-        this.errorCount += 1
-
-        if (error.name === 'AbortError' && this.errorCount < 12) {
-          setTimeout(() => this.getMedia(additional), 100 + Math.pow(2, this.errorCount))
-          return {}
-        }
-
-        if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
-          if (audioConstraints) {
-            this.props.microphonePermissionDenied()
-          }
-
-          if (videoConstraints) {
-            this.props.cameraPermissionDenied()
-          }
-        }
-
-        this.props.deviceCaptureRequest(false, false)
-        if (this.props.onError) {
-          this.props.onError(error)
-        }
-
+      if (error.name === 'AbortError' && this.errorCount < 12) {
+        setTimeout(() => this.getMedia(additional), 100 + Math.pow(2, this.errorCount))
         return {}
       }
 
-      this.errorCount = 0
-
-      const audio = stream.getAudioTracks()[0]
-      const video = stream.getVideoTracks()[0]
-
-      if (audio) {
-        this.props.addLocalAudio(audio, stream, this.props.replaceAudio)
-        if (this.props.share !== false) {
-          this.props.shareLocalMedia(audio.id)
+      if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
+        if (!!audioConstraints) {
+          this.props.microphonePermissionDenied()
         }
-      } else if (audioConstraints) {
-        this.props.microphonePermissionDenied()
-      }
 
-      if (video) {
-        this.props.addLocalVideo(video, stream, this.props.mirrored, this.props.replaceVideo)
-        if (this.props.share !== false) {
-          this.props.shareLocalMedia(video.id)
+        if (!!videoConstraints) {
+          this.props.cameraPermissionDenied()
         }
-      } else if (videoConstraints) {
-        this.props.cameraPermissionDenied()
       }
 
-      await this.props.fetchDevices()
-
-      await this.props.deviceCaptureRequest(false, false)
-
-      const trackIds = {
-        audio: audio ? audio.id : undefined,
-        video: video ? video.id : undefined
+      this.props.deviceCaptureRequest(false, false)
+      if (this.props.onError) {
+        this.props.onError(error)
       }
 
-      if (this.props.onSuccess) {
-        this.props.onSuccess(trackIds)
-      }
-
-      return trackIds
-    } catch (error) {
-
+      return {}
     }
+
+    this.errorCount = 0
+
+    const audio = stream.getAudioTracks()[0]
+    const video = stream.getVideoTracks()[0]
+
+    if (audio) {
+      this.props.addLocalAudio(audio, stream, this.props.replaceAudio)
+      if (this.props.share !== false) {
+        this.props.shareLocalMedia(audio.id)
+      }
+    } else if (!!audioConstraints) {
+      this.props.microphonePermissionDenied()
+    }
+
+    if (video) {
+      this.props.addLocalVideo(video, stream, this.props.mirrored, this.props.replaceVideo)
+      if (this.props.share !== false) {
+        this.props.shareLocalMedia(video.id)
+      }
+    } else if (!!videoConstraints) {
+      this.props.cameraPermissionDenied()
+    }
+
+    await this.props.fetchDevices()
+    await this.props.deviceCaptureRequest(false, false)
+    const trackIds = {
+      audio: audio ? audio.id : undefined,
+      video: video ? video.id : undefined
+    }
+
+    if (this.props.onSuccess) {
+      this.props.onSuccess(trackIds)
+    }
+
+    return trackIds
   }
 
   render () {
