@@ -1,39 +1,20 @@
-import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Provider from '../components/atoms/Provider'
+import { isSupportedBrowser } from '../reducers'
+import { getConnectionState } from '../reducers/connections'
+import { getLocalMedia } from '../reducers/media'
 
 const mapStateToProps = state => ({
-  connectionState: '',
-  localMedia: ''
+  connectionState: getConnectionState(state),
+  isSupportedBrowser: isSupportedBrowser(),
+  localMedia: getLocalMedia(state)
 })
 
-const mapDispatchToProps = dispatch => ({
-  connect: () => {},
-  disconnect: () => {},
-  removeAllMedia: () => {}
+const mapDispatchToProps = (dispatch, props) => ({
+  connect: () => dispatch(Actions.connect(props.configUrl, props.userData)),
+  disconnect: () => dispatch(Actions.disconnect()),
+  removeAllMedia: () => dispatch(Actions.removeAllMedia())
 })
-
-class Provider extends Component {
-  componentDidMount () {
-    this.props.connect()
-  }
-
-  componentWillMount () {
-    this.props.disconnect()
-  }
-
-  render () {
-    const renderProps = {
-      connectionState: this.props.connectionState
-    }
-
-    let render = this.props.render
-    if (!render && typeof this.props.children === 'function') {
-      render = this.props.children
-    }
-
-    return render ? render(renderProps) : this.props.children
-  }
-}
 
 const createConnectionStateComponent = (connectionState) => {
   return connect(mapStateToProps)((props) => {
@@ -46,7 +27,7 @@ const createConnectionStateComponent = (connectionState) => {
       render = props.children
     }
 
-    if (this.props.connectionState === connectionState) {
+    if (props.connectionState === connectionState) {
       return render ? render(renderProps) : props.children
     }
 

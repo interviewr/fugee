@@ -1,36 +1,70 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import StreamStore from '../../../services/StreamStore'
 
 const StyledVideo = styled.video``
 
-const Video = React.memo((props) => {
-  const attachStream = (id, node) => {
-    if (node) {
-      node.srcObject = StreamStore.get(id)
+class Video extends React.Component {
+  static propTypes = {
+    className: PropTypes.string,
+    onClick: PropTypes.func,
+    media: PropTypes.shape({
+      stream: PropTypes.string,
+      loaded: PropTypes.bool,
+      renderMirrored: PropTypes.bool
+    })
+  }
+
+  static defaultProps = {
+    className: '',
+    onClick: () => {},
+    media: null
+  }
+
+  componentDidMount () {
+    this.setup()
+  }
+
+  componentDidUpdate () {
+    this.setup()
+  }
+
+  setup () {
+    if (!this.props.media || !this.video) {
+      return
+    }
+
+    this.video.oncontextmenu = (event) => {
+      event.preventDefault()
+    }
+
+    this.video.muted = true
+    this.video.autoplay = true
+
+    if (this.video.srcObject !== this.props.media.stream) {
+      this.video.srcObject = this.props.media.stream
     }
   }
 
-  return (
-    <StyledVideo
-      autoPlay
-      className={props.className}
-      ref={(c) => { attachStream(props.peerId, c) }}
-      onClick={props.onClick}
-    />
-  )
-})
+  render () {
+    if (!this.props.media || !this.props.media.loaded) {
+      return null
+    }
 
-Video.propTypes = {
-  peerId: PropTypes.string,
-  className: PropTypes.string,
-  onClick: PropTypes.func
-}
-
-Video.defaultProps = {
-  className: '',
-  onClick: () => {}
+    return (
+      <StyledVideo
+        playsInline
+        ref={(node) => { this.video = node }}
+        className={this.props.className}
+        onClick={this.props.onClick}
+        style={
+          this.props.media && this.props.media.renderMirrored
+            ? { transform: 'scaleX(-1)' }
+            : {}
+        }
+      />
+    )
+  }
 }
 
 export default Video

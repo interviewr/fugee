@@ -1,27 +1,5 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-
-const mapStateToProps = (state, props) => {
-  const permissions = Selectors.getDevicePermissions(state)
-
-  return {
-    ...props,
-    requestingCameraCapture: permissions.requestingCameraCapture,
-    requestingCapture: permissions.requestingCapture,
-    requestingMicrophoneCapture: permissions.requestingMicrophoneCapture
-  }
-}
-
-const mapDispatchToProps = dispatch => ({
-  addLocalAudio: (track, stream, replace) => dispatch(Actions.addLocalAudio(track, stream, replace)),
-  addLocalVideo: (track, stream, mirrored, replace) => dispatch(Actions.addLocalVideo(track, stream, mirrored, replace)),
-  cameraPermissionDenied: (err) => dispatch(Actions.cameraPermissionDenied(err)),
-  deviceCaptureRequest: (camera, microphone) => dispatch(Actions.deviceCaptureRequest(camera, microphone)),
-  fetchDevices: () => dispatch(Actions.fetchDevices()),
-  microphonePermissionDenied: (err) => dispatch(Actions.microphonePermissionDenied(err)),
-  removeAllMedia: (kind) => dispatch(Actions.removeAllMedia(kind)),
-  shareLocalMedia: (id) => dispatch(Actions.shareLocalMedia(id))
-})
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const mergeConstraints = (defaults, provided, additional) => {
   var disabled = (additional === false) || (!additional && !provided)
@@ -38,7 +16,42 @@ const mergeConstraints = (defaults, provided, additional) => {
   }
 }
 
-class RequestUserMedia extends Component {
+class RequestUserMedia extends React.Component {
+  // TODO: fix propTypes
+  static propTypes = {
+    auto: PropTypes.bool,
+    video: PropTypes.bool,
+    audio: PropTypes.bool,
+    deviceCaptureRequest: PropTypes.func.isRequired,
+    removeAllMedia: PropTypes.func.isRequired,
+    microphonePermissionDenied: PropTypes.func.isRequired,
+    cameraPermissionDenied: PropTypes.func.isRequired,
+    onError: PropTypes.func,
+    onSuccess: PropTypes.func,
+    addLocalAudio: PropTypes.func.isRequired,
+    addLocalVideo: PropTypes.func.isRequired,
+    replaceAudio: '',
+    share: PropTypes.bool,
+    shareLocalMedia: PropTypes.func.isRequired,
+    fetchDevices: PropTypes.func.isRequired,
+    render: PropTypes.func,
+    children: PropTypes.oneOfType([
+      PropTypes.node,
+      PropTypes.func
+    ]),
+    mirrored: PropTypes.bool
+  }
+
+  static defaultProps = {
+    auto: true,
+    video: true,
+    audio: true,
+    mirrored: false,
+    share: true,
+    onError: () => {},
+    onSuccess: () => {}
+  }
+
   constructor (props) {
     super(props)
     this.errorCount = 0
@@ -94,11 +107,11 @@ class RequestUserMedia extends Component {
       }
 
       if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {
-        if (!!audioConstraints) {
+        if (!!audioConstraints) { // eslint-disable-line
           this.props.microphonePermissionDenied()
         }
 
-        if (!!videoConstraints) {
+        if (!!videoConstraints) { // eslint-disable-line
           this.props.cameraPermissionDenied()
         }
       }
@@ -121,7 +134,7 @@ class RequestUserMedia extends Component {
       if (this.props.share !== false) {
         this.props.shareLocalMedia(audio.id)
       }
-    } else if (!!audioConstraints) {
+    } else if (!!audioConstraints) { // eslint-disable-line
       this.props.microphonePermissionDenied()
     }
 
@@ -130,7 +143,7 @@ class RequestUserMedia extends Component {
       if (this.props.share !== false) {
         this.props.shareLocalMedia(video.id)
       }
-    } else if (!!videoConstraints) {
+    } else if (!!videoConstraints) { // eslint-disable-line
       this.props.cameraPermissionDenied()
     }
 
@@ -174,4 +187,4 @@ class RequestUserMedia extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RequestUserMedia)
+export default RequestUserMedia
