@@ -1,10 +1,15 @@
-import {} from '../actions'
+import {
+  PEER_ONLINE,
+  PEER_OFFLINE,
+  PEER_UPDATED,
+  LEAVE_ROOM
+} from '../actions/constants'
 
 export const initialState = {}
 
 export function peers (state = initialState, action) {
   switch (action.type) {
-    case Constants_1.PEER_ONLINE: {
+    case PEER_ONLINE: {
       if (state[action.payload.peerAddress]) {
         const existingPeer = state[action.payload.peerAddress]
         if (!existingPeer) {
@@ -41,12 +46,12 @@ export function peers (state = initialState, action) {
         }
       }
     }
-    case Constants_1.PEER_OFFLINE: {
+    case PEER_OFFLINE: {
       const result = { ...state }
       delete result[action.payload.peerAddress]
       return result
     }
-    case Constants_1.PEER_UPDATED: {
+    case PEER_UPDATED: {
       const existingPeer = state[action.payload.peerAddress]
       if (!existingPeer) {
         return state
@@ -60,7 +65,7 @@ export function peers (state = initialState, action) {
         }
       }
     }
-    case Constants_1.LEAVE_ROOM: {
+    case LEAVE_ROOM: {
       const result = { ...state }
 
       for (const peerAddress of Object.keys(state)) {

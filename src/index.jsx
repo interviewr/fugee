@@ -12,6 +12,16 @@ import Login from './components/pages/Login'
 import Conference from './containers/Conference'
 import theme from './themes/default'
 
+import App from './components/pages/App'
+
+const ConfiguredApp = () => (
+  <App
+    configUrl={{}}
+    roomName={'test'}
+    roomPassword={''}
+  />
+)
+
 ReactDOM.render(
   <Provider store={store}>
     <ThemeProvider theme={theme}>
@@ -20,7 +30,7 @@ ReactDOM.render(
         <Router history={history}>
           <Switch>
             <Route exact path='/' component={Login} />
-            <Route path='/feedback' component={() => (<div>test</div>)} />
+            <Route path='/feedback' component={ConfiguredApp} />
             <Route path='/:roomId' component={Conference} />
           </Switch>
         </Router>

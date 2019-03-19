@@ -1,4 +1,9 @@
-import {} from '../actions'
+import {
+  JOIN_ROOM,
+  JOIN_ROOM_SUCCESS,
+  JOIN_ROOM_FAILED,
+  LEAVE_ROOM
+} from '../actions/constants'
 
 export const initialState = {}
 
@@ -9,7 +14,7 @@ const updateRoom = (state, action) => {
     return state
   }
 
-  if (action.type === Constants_1.JOIN_ROOM_FAILED) {
+  if (action.type === JOIN_ROOM_FAILED) {
     return {
       ...state,
       [action.payload.roomAddress]: {
@@ -38,7 +43,7 @@ const updateRoom = (state, action) => {
 // TODO: maybe move all case into separate functions
 export function rooms (state = initialState, action) {
   switch (action.type) {
-    case Constants_1.JOIN_ROOM:
+    case JOIN_ROOM:
       return {
         ...state,
         [action.payload.roomAddress]: {
@@ -56,50 +61,14 @@ export function rooms (state = initialState, action) {
           unreadCount: 0
         }
       }
-    case Constants_1.JOIN_ROOM_FAILED:
+    case JOIN_ROOM_FAILED:
       return updateRoom(state, action)
-    case Constants_1.JOIN_ROOM_SUCCESS:
+    case JOIN_ROOM_SUCCESS:
       return updateRoom(state, action)
-    case Constants_1.LEAVE_ROOM: {
+    case LEAVE_ROOM: {
       const result = { ...state }
       delete result[action.payload.roomAddress]
       return result
-    }
-    case Constants_1.LOCK_ROOM:
-    case Constants_1.UNLOCK_ROOM:
-    case Constants_1.ROOM_LOCKED:
-    case Constants_1.ROOM_UNLOCKED: {
-      const existingRoom = state[action.payload.roomAddress]
-
-      if (!existingRoom) {
-        return state
-      }
-
-      switch (action.type) {
-        case Constants_1.LOCK_ROOM:
-        case Constants_1.ROOM_LOCKED:
-          return {
-            ...state,
-            [action.payload.roomAddress]: {
-              ...existingRoom,
-              password: action.payload.password,
-              passwordRequired: true,
-              providedPassword: undefined
-            }
-          }
-        case Constants_1.ROOM_UNLOCKED:
-          return {
-            ...state,
-            [action.payload.roomAddress]: {
-              ...existingRoom,
-              password: '',
-              passwordRequired: false,
-              providedPassword: undefined
-            }
-          }
-      }
-
-      return state
     }
     default:
       return state

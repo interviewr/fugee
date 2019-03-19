@@ -1,10 +1,14 @@
-import {} from '../actions'
+import {
+  PEER_CONNECTION_ADDED,
+  PEER_CONNECTION_UPDATED,
+  PEER_CONNECTION_REMOVED
+} from '../actions/constants'
 
 export const initialState = {}
 
 export function connections (state = initialState, action) {
   switch (action.type) {
-    case Constants_1.PEER_CONNECTION_ADDED:
+    case PEER_CONNECTION_ADDED:
       return {
         ...state,
         [action.payload.id]: {
@@ -17,7 +21,7 @@ export function connections (state = initialState, action) {
           sendingVideoMediaId: ''
         }
       }
-    case Constants_1.PEER_CONNECTION_UPDATED: {
+    case PEER_CONNECTION_UPDATED: {
       if (!state[action.payload.id]) {
         return state
       }
@@ -31,7 +35,7 @@ export function connections (state = initialState, action) {
         }
       }
     }
-    case Constants_1.PEER_CONNECTION_REMOVED: {
+    case PEER_CONNECTION_REMOVED: {
       const result = { ...state }
       delete result[action.payload.id]
       return result

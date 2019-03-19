@@ -1,4 +1,9 @@
-import {} from '../actions'
+import {
+  DEVICES,
+  CAMERA_PERMISSION_DENIED,
+  MICROPHONE_PERMISSION_DENIED,
+  DEVICE_CAPTURE
+} from '../actions/constants'
 import { getMediaTrack } from './media'
 
 export const initialState = {
@@ -17,7 +22,7 @@ export const initialState = {
 
 export function devices (state = initialState, action) {
   switch (action.type) {
-    case Constants_1.DEVICES: {
+    case DEVICES: {
       const devices = action.payload
       const audioInputs = devices.filter(d => d.kind === 'audioinput')
       const videoInputs = devices.filter(d => d.kind === 'videoinput')
@@ -33,17 +38,17 @@ export function devices (state = initialState, action) {
         microphonePermissionGranted: audioInputs.filter(d => !!d.label).length > 0
       }
     }
-    case Constants_1.CAMERA_PERMISSION_DENIED:
+    case CAMERA_PERMISSION_DENIED:
       return {
         ...state,
         cameraPermissionDenied: true
       }
-    case Constants_1.MICROPHONE_PERMISSION_DENIED:
+    case MICROPHONE_PERMISSION_DENIED:
       return {
         ...state,
         microphonePermissionDenied: true
       }
-    case Constants_1.DEVICE_CAPTURE:
+    case DEVICE_CAPTURE:
       return {
         ...state,
         equestingCameraCapture: action.payload.camera,

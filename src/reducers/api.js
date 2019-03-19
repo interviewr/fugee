@@ -1,4 +1,9 @@
-import {} from '../actions'
+import {
+  SIGNALING_CLIENT,
+  SIGNALING_CLIENT_SHUTDOWN,
+  CONNECTION_STATE_CHANGE,
+  RECEIVED_CONFIG
+} from '../actions/constants'
 
 export const initialState = {
   config: {
@@ -20,23 +25,23 @@ export const initialState = {
 
 export function api (state = initialState, action) {
   switch (action.type) {
-    case Constants_1.SIGNALING_CLIENT:
+    case SIGNALING_CLIENT:
       return {
         ...state,
         signalingClient: action.payload
       }
-    case Constants_1.SIGNALING_CLIENT_SHUTDOWN:
+    case SIGNALING_CLIENT_SHUTDOWN:
       return {
         ...state,
         connectionState: 'disconnected',
         signalingClient: undefined
       }
-    case Constants_1.CONNECTION_STATE_CHANGE:
+    case CONNECTION_STATE_CHANGE:
       return {
         ...state,
         connectionState: action.payload
       }
-    case Constants_1.RECEIVED_CONFIG: {
+    case RECEIVED_CONFIG: {
       const config = action.payload.config
       const configUrl = action.payload.configUrl
       const token = action.payload.token || ''

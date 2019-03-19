@@ -4,6 +4,8 @@ import { isSupportedBrowser } from '../reducers'
 import { getConnectionState } from '../reducers/connections'
 import { getLocalMedia } from '../reducers/media'
 
+import Actions from '../actions/Actions'
+
 const mapStateToProps = state => ({
   connectionState: getConnectionState(state),
   isSupportedBrowser: isSupportedBrowser(),

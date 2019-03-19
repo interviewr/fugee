@@ -1,4 +1,9 @@
-import {} from '../actions'
+import {
+  JOIN_CALL,
+  LEAVE_CALL,
+  LEAVE_ROOM,
+  JOIN_ROOM_SUCCESS
+} from '../actions/constants'
 import { getRoomByAddress } from './rooms'
 
 export const initialState = {}
@@ -23,7 +28,7 @@ const updatedCall = (state, action) => {
     state = addCall(state, action)
   }
 
-  if (action.type === Constants_1.JOIN_CALL) {
+  if (action.type === JOIN_CALL) {
     return {
       ...state,
       [action.payload.roomAddress]: {
@@ -34,7 +39,7 @@ const updatedCall = (state, action) => {
     }
   }
 
-  if (action.type === Constants_1.LEAVE_CALL) {
+  if (action.type === LEAVE_CALL) {
     return {
       ...state,
       [action.payload.roomAddress]: {
@@ -56,13 +61,13 @@ export const removeCall = (state, action) => {
 
 export function calls (state = initialState, action) {
   switch (action.type) {
-    case Constants_1.JOIN_CALL:
+    case JOIN_CALL:
       return updatedCall(state, action)
-    case Constants_1.LEAVE_CALL:
+    case LEAVE_CALL:
       return updatedCall(state, action)
-    case Constants_1.LEAVE_ROOM:
+    case LEAVE_ROOM:
       return removeCall(state, action)
-    case Constants_1.JOIN_ROOM_SUCCESS:
+    case JOIN_ROOM_SUCCESS:
       return updatedCall(state, action)
     default:
       return state

@@ -1,20 +1,25 @@
-import {} from '../actions'
+import {
+  ADD_MEDIA,
+  REMOVE_MEDIA,
+  MEDIA_UPDATED,
+  LEAVE_CALL
+} from '../actions/constants'
 
 export const initialState = {}
 
 export function media (state = initialState, action) {
   switch (action.type) {
-    case Constants_1.ADD_MEDIA:
+    case ADD_MEDIA:
       return {
         ...state,
         [action.payload.id]: action.payload
       }
-    case Constants_1.REMOVE_MEDIA: {
+    case REMOVE_MEDIA: {
       const result = { ...state }
       delete result[action.payload.id]
       return result
     }
-    case Constants_1.MEDIA_UPDATED: {
+    case MEDIA_UPDATED: {
       const existing = state[action.payload.id]
       if (!existing) {
         return state
@@ -28,7 +33,7 @@ export function media (state = initialState, action) {
         }
       }
     }
-    case Constants_1.LEAVE_CALL: {
+    case LEAVE_CALL: {
       const result = { ...state }
       for (const id of Object.keys(state)) {
         const media = state[id]

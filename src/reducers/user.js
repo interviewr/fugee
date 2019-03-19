@@ -1,4 +1,8 @@
-import {} from '../actions'
+import {
+  DEVICES,
+  RECEIVED_CONFIG,
+  SET_USER_PREFERENCE
+} from '../actions/constants'
 
 export const initialState = {
   displayName: '',
@@ -10,17 +14,17 @@ export const initialState = {
 
 export function user (state = initialState, action) {
   switch (action.type) {
-    case Constants_1.SET_USER_PREFERENCE:
+    case SET_USER_PREFERENCE:
       return {
         ...state,
         ...action.payload
       }
-    case Constants_1.RECEIVED_CONFIG:
+    case RECEIVED_CONFIG:
       return {
         ...state,
         displayName: action.payload.config.displayName || state.displayName || 'Anonymous'
       }
-    case Constants_1.DEVICES: {
+    case DEVICES: {
       var outputDevice = state.audioOutputDeviceId
       if (outputDevice) {
         for (const device of action.payload) {
