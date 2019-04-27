@@ -124,9 +124,17 @@ export const destroyRoom = (roomAddress) =>
         type: Constants.DESTROY_ROOM
       })
     } catch (error) {
-      console.error(error)
+      console.error('destroyRoom', error)
     }
   }
+
+export const roomLocked = (roomAddress, password) => ({
+  payload: {
+    password: password,
+    roomAddress: roomAddress
+  },
+  type: Constants.ROOM_LOCKED
+})
 
 export const roomUnlocked = (roomAddress) => ({
   payload: {

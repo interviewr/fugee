@@ -34,11 +34,7 @@ class RequestUserMedia extends React.Component {
     share: PropTypes.bool,
     shareLocalMedia: PropTypes.func.isRequired,
     fetchDevices: PropTypes.func.isRequired,
-    render: PropTypes.func,
-    children: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.func
-    ]),
+    children: PropTypes.node,
     mirrored: PropTypes.bool
   }
 
@@ -162,24 +158,11 @@ class RequestUserMedia extends React.Component {
   }
 
   render () {
-    const renderProps = this.getMedia()
-    let render = this.props.render
-
-    if (!render && typeof this.props.children === 'function') {
-      render = this.props.children
-    }
-
-    if (render) {
-      return render(renderProps)
-    } else if (this.props.children) {
-      return this.props.children
-    }
-
     if (this.props.auto) {
       return null
     } else {
       return (
-        <button onClick={renderProps}>
+        <button onClick={this.getMedia}>
           Request Media
         </button>
       )

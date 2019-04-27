@@ -7,6 +7,7 @@ const fetchConfig = async () => {
     resolve({
       // userId: 'admin@localhost',
       userId: `admin${Math.floor(Math.random() * 100)}@anon.raven.io`,
+      displayName: `Guest${Math.floor(Math.random() * 100)}`,
       credential: '',
       id: '',
       signalingUrl: 'ws://localhost:5280/xmpp-websocket/',

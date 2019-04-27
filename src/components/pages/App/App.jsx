@@ -6,6 +6,7 @@ import Provider, {
 } from '../../../containers/Provider'
 import RequestUserMedia from '../../../containers/RequestUserMedia'
 import Room from '../../../containers/Room'
+import Video from '../../atoms/Video'
 
 const App = ({ configUrl, userData, roomName, roomPassword }) => (
   <Provider
@@ -28,9 +29,19 @@ const App = ({ configUrl, userData, roomName, roomPassword }) => (
             return <h1>Joining room...</h1>
           }
 
+          const remoteVideos = remoteMedia.filter(m => m.kind === 'video')
+          const localVideos = localMedia.filter(m => m.kind === 'video' && m.shared)
+          const items = [...localVideos, ...remoteVideos]
+
           return (
             <div>
               <h1>{room.providedName}</h1>
+              {items.map((item, idx) => (
+                <Video
+                  key={idx}
+                  media={item}
+                />
+              ))}
             </div>
           )
         }}

@@ -232,27 +232,36 @@ class SingalClient {
 
     try {
       await this.xmpp.configureRoom(roomAddress, {
-        fields: [{
-          name: 'FORM_TYPE',
-          value: 'http://jabber.org/protocol/muc#roomconfig'
-        }, {
-          name: 'muc#roomconfig_whois',
-          type: 'text-single',
-          value: 'moderators'
-        }, {
-          name: 'muc#roomconfig_roomsecret',
-          type: 'text-single',
-          value: password
-        }, {
-          name: 'muc#roomconfig_passwordprotectedroom',
-          type: 'boolean',
-          value: '1'
-        }]
+        fields: [
+          {
+            name: 'FORM_TYPE',
+            value: 'http://jabber.org/protocol/muc#roomconfig'
+          },
+          {
+            name: 'muc#roomconfig_publicroom',
+            value: 1
+          }
+          // {
+          //   name: 'muc#roomconfig_whois',
+          //   type: 'text-single',
+          //   value: 'moderators'
+          // },
+          // {
+          //   name: 'muc#roomconfig_roomsecret',
+          //   type: 'text-single',
+          //   value: password
+          // },
+          // {
+          //   name: 'muc#roomconfig_passwordprotectedroom',
+          //   type: 'boolean',
+          //   value: '1'
+          // }
+        ]
       })
 
-      // this.dispatch(roomLocked(roomAddress, password))
+      this.dispatch(Actions.roomLocked(roomAddress, password))
     } catch (error) {
-      console.error(error)
+      console.error('lockRoom', error)
     }
   }
 
@@ -265,27 +274,37 @@ class SingalClient {
 
     try {
       await this.xmpp.configureRoom(roomAddress, {
-        fields: [{
-          name: 'FORM_TYPE',
-          value: 'http://jabber.org/protocol/muc#roomconfig'
-        }, {
-          name: 'muc#roomconfig_whois',
-          type: 'text-single',
-          value: 'moderators'
-        }, {
-          name: 'muc#roomconfig_roomsecret',
-          type: 'text-single',
-          value: ''
-        }, {
-          name: 'muc#roomconfig_passwordprotectedroom',
-          type: 'boolean',
-          value: '1'
-        }]
+        // https://xmpp.org/extensions/xep-0045.html#registrar-formtype-owner
+        fields: [
+          {
+            name: 'FORM_TYPE',
+            value: 'http://jabber.org/protocol/muc#roomconfig'
+          },
+          {
+            name: 'muc#roomconfig_publicroom',
+            value: 1
+          }
+          // {
+          //   name: 'muc#roomconfig_whois',
+          //   type: 'text-single',
+          //   value: 'moderators'
+          // },
+          // {
+          //   name: 'muc#roomconfig_roomsecret',
+          //   type: 'text-single',
+          //   value: ''
+          // },
+          // {
+          //   name: 'muc#roomconfig_passwordprotectedroom',
+          //   type: 'boolean',
+          //   value: '1'
+          // }
+        ]
       })
 
-      // this.dispatch(roomUnlocked(roomAddress))
+      this.dispatch((Actions.roomAddress))
     } catch (error) {
-      console.error(error)
+      console.error('unlockRoom', error)
     }
   }
 
