@@ -5,7 +5,7 @@ LABEL maintainer "Alexey Vakulich <alexey.vakulich@gmail.com>"
 RUN mkdir -p /app
 
 COPY ./build /app/
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./config/nginx/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
