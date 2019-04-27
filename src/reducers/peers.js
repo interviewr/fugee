@@ -30,9 +30,7 @@ export function peers (state = initialState, action) {
         [action.payload.peerAddress]: {
           address: action.payload.peerAddress,
           chatState: 'active',
-          customerData: action.payload.customerData || {},
           displayName: action.payload.displayName || '',
-          id: action.payload.id,
           joinedCall: action.payload.joinedCall || false,
           muted: false,
           requestingAttention: false,

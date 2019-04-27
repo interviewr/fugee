@@ -54,8 +54,6 @@ class Mesh {
       return
     }
 
-    global.console.log('updateConnections')
-
     const state = this.getState()
     // const videoPeersCount = countPeersWantingVideo(state)
     const calls = getJoinedCalls(state)
@@ -183,7 +181,6 @@ class Mesh {
 
   plugin = () => () => {
     this.jingle.on('incoming', (session) => {
-      global.console.log('jingle:incoming')
       const state = this.getState()
       const call = getCallForRoom(state, session.peerID.split('/')[0])
 
@@ -207,14 +204,13 @@ class Mesh {
     })
 
     this.jingle.on('terminated', (session) => {
-      global.console.log('terminated')
       this.dispatch(removeConnection(session.peerID, session.sid))
       this.updateConnections()
     })
 
     this.jingle.on('createdSession', (session) => {
-      global.console.log('createdSession')
       this.dispatch(addConnection(session.peerID, session.sid))
+
       session.on('peerTrackAdded', (_, track, stream) => {
         this.dispatch(addRemoteMedia(session.peerID.split('/')[0], session.peerID, track, stream, false))
         if (track.kind === 'audio') {
@@ -237,7 +233,6 @@ class Mesh {
       })
 
       session.pc.on('iceConnectionStateChange', () => {
-        global.console.log('iceConnectionStateChange')
         let connection = 'disconnected'
         switch (session.pc.iceConnectionState) {
           case 'checking':
@@ -297,7 +292,6 @@ class Mesh {
   }
 
   notifyPeers = (media, action) => {
-    global.console.log('notifyPeers')
     const state = this.getState()
     const connections = getConnections(state)
     Object.values(getClient(state).jingle.sessions).forEach((session) => {

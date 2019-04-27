@@ -6,7 +6,7 @@ import { getRoomByAddress } from '../reducers/rooms'
 export const fetchRoomConfig = (configUrl, roomName, auth, maxTries, timeout) => {
   return new Promise((resolve) => {
     resolve({
-      roomAddress: 'testroom@muc.raven.io'
+      roomAddress: 'testroom@muc.raven.io' // TODO: hardcoded
     })
   })
 }
@@ -22,7 +22,6 @@ export const joinRoom = (roomName, opts = {}) =>
       const existingRoom = getRoomByAddress(state, config.roomAddress)
       if (!existingRoom || (existingRoom && !existingRoom.joined)) {
         if (client) {
-          global.console.log('CLIENT', config.roomAddress)
           client.joinRoom(config.roomAddress, opts.password, opts.autoJoinCall)
         }
 
@@ -128,3 +127,10 @@ export const destroyRoom = (roomAddress) =>
       console.error(error)
     }
   }
+
+export const roomUnlocked = (roomAddress) => ({
+  payload: {
+    roomAddress: roomAddress
+  },
+  type: Constants.ROOM_UNLOCKED
+})

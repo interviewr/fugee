@@ -5,9 +5,7 @@ export const peerOnline = (roomAddress, peerAddress, opts) =>
   (dispatch, getState) => {
     dispatch({
       payload: {
-        customerData: opts.customerData,
         displayName: opts.displayName,
-        id: opts.id,
         joinedCall: opts.joinedCall || false,
         peerAddress: peerAddress,
         requestingMedia: opts.requestingMedia || 'none',
