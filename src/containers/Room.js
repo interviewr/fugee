@@ -2,12 +2,13 @@ import { connect } from 'react-redux'
 import Room from '../components/atoms/Room'
 import {
   getRoomByAddress,
-  getRoomByProvidedName,
-  getCallForRoom,
-  getPeersForRoom
+  getRoomByProvidedName
 } from '../reducers/rooms'
-import { getConnectionState } from '../reducers/connections'
+import { getCallForRoom } from '../reducers/calls'
+import { getConnectionState } from '../reducers/api'
 import { getLocalMedia, getRemoteMedia } from '../reducers/media'
+import { getPeersForRoom } from '../reducers/peers'
+import Actions from '../actions'
 
 const mapStateToProps = (state, props) => {
   let room

@@ -122,3 +122,17 @@ export const getActiveSpeakersForCall = (state, roomAddress) => {
 
   return results
 }
+
+export const countPeersWantingVideo = (state) => {
+  let count = 0
+  const peers = Object.keys(state.peers)
+
+  peers.forEach((id) => {
+    const peer = state.peers[id]
+    if (peer.requestingMedia === 'video') {
+      count += 1
+    }
+  })
+
+  return count
+}

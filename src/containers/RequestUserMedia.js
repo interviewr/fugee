@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import RequestUserMedia from '../components/atoms/RequestUserMedia'
 import { getDevicePermissions } from '../reducers/devices'
+import Actions from '../actions'
 
 const mapStateToProps = (state, props) => {
   const permissions = getDevicePermissions(state)

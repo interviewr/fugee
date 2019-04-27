@@ -1,10 +1,10 @@
 import { addConnection, updateConnection, removeConnection } from '../../actions/Connections'
 import { updateMedia, removeMedia, addRemoteMedia } from '../../actions/Media'
 import { getClient, getAPIConfig } from '../../reducers/api'
-import { getConnections } from '../../reducers/connections'
+import { getConnections, getConnectionsForPeer } from '../../reducers/connections'
 import { getPeersForCall } from '../../reducers/peers'
 import { getJoinedCalls, getCallForRoom } from '../../reducers/calls'
-import { getMedia } from '../../reducers/media'
+import { getMedia, getSharedMedia } from '../../reducers/media'
 
 const createIceServerConfig = (server) => {
   let host = server.host
@@ -50,15 +50,17 @@ class Mesh {
   }
 
   updateConnections = () => {
-    if (!RTCPeerConnection) {
+    if (!window.RTCPeerConnection) {
       return
     }
 
+    global.console.log('updateConnections')
+
     const state = this.getState()
-    const videoPeersCount = Selectors.countPeersWantingVideo(state)
+    // const videoPeersCount = countPeersWantingVideo(state)
     const calls = getJoinedCalls(state)
     const media = getMedia(state)
-    const sharedMedia = Selectors.getStaredMedia(state)
+    const sharedMedia = getSharedMedia(state)
 
     calls.forEach((call) => {
       const peers = getPeersForCall(state, call.roomAddress)
@@ -70,7 +72,7 @@ class Mesh {
         const wantsAudio = peer.requestingMedia === 'video' || peer.requestingMedia === 'audio'
         const peerSharedMedia = new Map()
         const overSharedSessions = new Set()
-        const connections = Selectors.getConnectionsForPeer(state, peer.address)
+        const connections = getConnectionsForPeer(state, peer.address)
 
         connections.forEach((connection) => {
           if (connection.sendingAudioMediaId) {
@@ -128,7 +130,7 @@ class Mesh {
 
         const loop = (pair) => {
           const session = this.jingle.createMediaSession(peer.address)
-          const stream = new MediaStream()
+          const stream = new window.MediaStream()
           if (pair.audio) {
             stream.addTrack(pair.audio.track)
             this.dispatch(updateConnection(peer.address, session.sid, {
@@ -181,6 +183,7 @@ class Mesh {
 
   plugin = () => () => {
     this.jingle.on('incoming', (session) => {
+      global.console.log('jingle:incoming')
       const state = this.getState()
       const call = getCallForRoom(state, session.peerID.split('/')[0])
 
@@ -204,11 +207,13 @@ class Mesh {
     })
 
     this.jingle.on('terminated', (session) => {
+      global.console.log('terminated')
       this.dispatch(removeConnection(session.peerID, session.sid))
       this.updateConnections()
     })
 
     this.jingle.on('createdSession', (session) => {
+      global.console.log('createdSession')
       this.dispatch(addConnection(session.peerID, session.sid))
       session.on('peerTrackAdded', (_, track, stream) => {
         this.dispatch(addRemoteMedia(session.peerID.split('/')[0], session.peerID, track, stream, false))
@@ -232,6 +237,7 @@ class Mesh {
       })
 
       session.pc.on('iceConnectionStateChange', () => {
+        global.console.log('iceConnectionStateChange')
         let connection = 'disconnected'
         switch (session.pc.iceConnectionState) {
           case 'checking':
@@ -249,6 +255,7 @@ class Mesh {
             break
           case 'closed':
             connection = 'disconnected'
+            break
           default:
             connection = 'connecting'
         }
@@ -290,6 +297,7 @@ class Mesh {
   }
 
   notifyPeers = (media, action) => {
+    global.console.log('notifyPeers')
     const state = this.getState()
     const connections = getConnections(state)
     Object.values(getClient(state).jingle.sessions).forEach((session) => {

@@ -1,10 +1,9 @@
 import { connect } from 'react-redux'
 import Provider from '../components/atoms/Provider'
 import { isSupportedBrowser } from '../reducers'
-import { getConnectionState } from '../reducers/connections'
+import { getConnectionState } from '../reducers/api'
 import { getLocalMedia } from '../reducers/media'
-
-import Actions from '../actions/Actions'
+import Actions from '../actions'
 
 const mapStateToProps = state => ({
   connectionState: getConnectionState(state),

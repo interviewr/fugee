@@ -1,5 +1,5 @@
-import Constants from './constants'
-import { getClient } from '../reducers'
+import * as Constants from './constants'
+import { getClient } from '../reducers/api'
 
 export const setDisplayName = (displayName) =>
   (dispatch, getState) => {

@@ -47,3 +47,18 @@ export function connections (state = initialState, action) {
 
 // Selectors
 export const getConnections = state => state.connections
+
+export const getConnectionsForPeer = (state, peerAddress) => {
+  const results = []
+  const connections = getConnections(state)
+  const cons = Object.keys(connections)
+
+  cons.forEach((id) => {
+    const connection = connections[id]
+    if (connection.peerAddress === peerAddress) {
+      results.push(connection)
+    }
+  })
+
+  return results
+}

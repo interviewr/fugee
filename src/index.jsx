@@ -9,7 +9,7 @@ import history from './services/history'
 
 import GlobalStyle from './components/GlobalStyle'
 import Login from './components/pages/Login'
-import Conference from './containers/Conference'
+// import Conference from './containers/Conference'
 import theme from './themes/default'
 
 import App from './components/pages/App'
@@ -17,8 +17,8 @@ import App from './components/pages/App'
 const ConfiguredApp = () => (
   <App
     configUrl={{}}
-    roomName={'test'}
-    roomPassword={''}
+    roomName='test'
+    roomPassword=''
   />
 )
 
@@ -31,7 +31,7 @@ ReactDOM.render(
           <Switch>
             <Route exact path='/' component={Login} />
             <Route path='/feedback' component={ConfiguredApp} />
-            <Route path='/:roomId' component={Conference} />
+            {/* <Route path='/:roomId' component={Conference} /> */}
           </Switch>
         </Router>
       </Fragment>

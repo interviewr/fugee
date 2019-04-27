@@ -1,4 +1,4 @@
-import Constants from './constants'
+import * as Constants from './constants'
 
 export const addConnection = (peerAddress, sessionId) => ({
   payload: {

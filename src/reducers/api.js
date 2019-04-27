@@ -48,7 +48,7 @@ export function api (state = initialState, action) {
 
       return {
         ...state,
-        config: { ...state.config, config },
+        config: { ...state.config, ...config },
         configUrl: configUrl,
         token: token
       }

@@ -1,4 +1,5 @@
-import Constants from './constants'
+import * as Constants from './constants'
+import { removeAllMedia } from './Media'
 import { getClient } from '../reducers/api'
 import { getJoinedCalls } from '../reducers/calls'
 
@@ -44,7 +45,7 @@ export const leaveCall = (roomAddress) =>
       // }
     }
     if (originalCalls.length > 0 && remainingCalls.length === 0) {
-      dispatch(Media_1.removeAllMedia())
+      dispatch(removeAllMedia())
     }
   }
 

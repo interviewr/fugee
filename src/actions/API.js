@@ -1,8 +1,34 @@
-import Constants from './constants'
+import * as Constants from './constants'
 import Signal from '../services/signal'
 import { getClient } from '../reducers/api'
 
-const connectionStateChanged = (connectionState) => ({
+const fetchConfig = async () => {
+  return new Promise((resolve) => {
+    resolve({
+      // userId: 'admin@localhost',
+      userId: `admin${Math.floor(Math.random() * 100)}@anon.raven.io`,
+      credential: '',
+      id: '',
+      signalingUrl: 'ws://localhost:5280/xmpp-websocket/',
+      iceServers: [{
+        host: 'stun.l.google.com',
+        password: '',
+        port: '19302',
+        type: 'stun',
+        username: ''
+      }, {
+        host: 'global.stun.twilio.com',
+        password: '',
+        port: '3478',
+        type: 'stun',
+        username: '',
+        transport: 'udp'
+      }]
+    })
+  })
+}
+
+export const connectionStateChanged = (connectionState) => ({
   payload: connectionState,
   type: Constants.CONNECTION_STATE_CHANGE
 })

@@ -30,7 +30,7 @@ class RequestUserMedia extends React.Component {
     onSuccess: PropTypes.func,
     addLocalAudio: PropTypes.func.isRequired,
     addLocalVideo: PropTypes.func.isRequired,
-    replaceAudio: '',
+    replaceAudio: PropTypes.string,
     share: PropTypes.bool,
     shareLocalMedia: PropTypes.func.isRequired,
     fetchDevices: PropTypes.func.isRequired,

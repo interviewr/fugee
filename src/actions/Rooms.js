@@ -1,9 +1,15 @@
-import Constants from './constants'
+import * as Constants from './constants'
 import { leaveCall } from './Calls'
 import { getClient, getAPIConfig } from '../reducers/api'
 import { getRoomByAddress } from '../reducers/rooms'
 
-export const fetchRoomConfig = (configUrl, roomName, auth, maxTries, timeout) => {}
+export const fetchRoomConfig = (configUrl, roomName, auth, maxTries, timeout) => {
+  return new Promise((resolve) => {
+    resolve({
+      roomAddress: 'testroom@muc.raven.io'
+    })
+  })
+}
 
 export const joinRoom = (roomName, opts = {}) =>
   async (dispatch, getState) => {
@@ -16,8 +22,10 @@ export const joinRoom = (roomName, opts = {}) =>
       const existingRoom = getRoomByAddress(state, config.roomAddress)
       if (!existingRoom || (existingRoom && !existingRoom.joined)) {
         if (client) {
+          global.console.log('CLIENT', config.roomAddress)
           client.joinRoom(config.roomAddress, opts.password, opts.autoJoinCall)
         }
+
         dispatch({
           payload: {
             autoJoinCall: (opts.autoJoinCall === undefined ? true : opts.autoJoinCall),
@@ -80,6 +88,23 @@ export const leaveRoom = (roomAddress) =>
     if (client) {
       client.mesh.updateConnections()
     }
+  }
+
+export const unlockRoom = (roomAddress) =>
+  (dispatch, getState) => {
+    const state = getState()
+    const client = getClient(state)
+
+    if (client) {
+      client.unlockRoom(roomAddress)
+    }
+
+    dispatch({
+      payload: {
+        roomAddress: roomAddress
+      },
+      type: Constants.UNLOCK_ROOM
+    })
   }
 
 export const destroyRoom = (roomAddress) =>

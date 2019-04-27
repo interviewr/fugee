@@ -1,4 +1,4 @@
-import Constants from './constants'
+import * as Constants from './constants'
 import { getClient } from '../reducers/api'
 
 export const peerOnline = (roomAddress, peerAddress, opts) =>

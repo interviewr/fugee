@@ -8,7 +8,7 @@ class Room extends React.Component {
     lock: PropTypes.func.isRequired,
     unlock: PropTypes.func.isRequired,
     leave: PropTypes.func.isRequired,
-    call: PropTypes.string,
+    call: PropTypes.object,
     room: PropTypes.shape({
       id: PropTypes.string,
       address: PropTypes.string,
@@ -24,8 +24,8 @@ class Room extends React.Component {
       roomState: PropTypes.oneOf(['joining', 'joined', 'password-required', 'failed', 'ended'])
     }),
     peers: PropTypes.array,
-    localMedia: PropTypes.object,
-    remoteMedia: PropTypes.object,
+    localMedia: PropTypes.array,
+    remoteMedia: PropTypes.array,
     roomAddress: PropTypes.string,
     password: PropTypes.string,
     render: PropTypes.func,

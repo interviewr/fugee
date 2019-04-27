@@ -3,6 +3,7 @@ import {
   RECEIVED_CONFIG,
   SET_USER_PREFERENCE
 } from '../actions/constants'
+import { getCallForRoom } from './calls'
 
 export const initialState = {
   displayName: '',
@@ -51,3 +52,14 @@ export const getUser = state => state.user
 export const getUserDisplayName = state => state.user.displayName
 export const getAudioOutputDevice = state => state.user.audioOutputDeviceId
 export const getGlobalVolumeLimit = state => state.user.globalVolumeLimit
+
+export const getDesiredMediaTypes = (state, roomAddress) => {
+  const defaultRequest = state.user.requestingMedia
+  if (roomAddress) {
+    const call = getCallForRoom(state, roomAddress)
+    if (call) {
+      return call.requestingMedia || defaultRequest
+    }
+  }
+  return defaultRequest
+}

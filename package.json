@@ -34,7 +34,6 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "@ok2ju/simple-multi-peer": "^0.2.0",
     "hark": "^1.2.3",
     "prop-types": "^15.6.2",
     "react": "16.8.0-alpha.1",
@@ -43,7 +42,7 @@
     "react-redux": "^6.0.0",
     "react-router": "^4.3.1",
     "redux": "^4.0.1",
-    "redux-saga": "^1.0.0",
+    "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.1.1",
     "stanza": "^11.0.1",
     "styled-components": "^4.1.3"

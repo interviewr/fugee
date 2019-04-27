@@ -80,7 +80,7 @@ export const getRooms = state => state.rooms
 export const getRoomByAddress = (state, roomAddress) => state.rooms[roomAddress]
 
 export const getRoomByProvidedName = (state, roomName) => {
-  for (const roomAddress of Object.keys(state.simplewebrtc.rooms)) {
+  for (const roomAddress of Object.keys(state.rooms)) {
     if (state.rooms[roomAddress].providedName === roomName) {
       return state.rooms[roomAddress]
     }

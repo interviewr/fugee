@@ -1,4 +1,4 @@
-import Constants from './constants'
+import * as Constants from './constants'
 import { getClient } from '../reducers/api'
 import { getMediaTrack, getMediaForPeer, getLocalMedia } from '../reducers/media'
 import { getPeerByAddress } from '../reducers/peers'
@@ -41,7 +41,7 @@ export const addLocalAudio = (track, stream, replaces) => {
 
   return (dispatch, getState) => {
     const audio = track.clone()
-    const utilityStream = new MediaStream()
+    const utilityStream = new window.MediaStream()
     utilityStream.addTrack(audio)
 
     track.onended = () => {

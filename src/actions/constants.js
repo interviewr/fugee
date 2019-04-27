@@ -36,6 +36,7 @@ export const JOIN_ROOM_SUCCESS = 'JOIN_ROOM_SUCCESS'
 export const JOIN_ROOM_FAILED = 'JOIN_ROOM_FAILED'
 export const LEAVE_ROOM = 'LEAVE_ROOM'
 export const DESTROY_ROOM = 'DESTROY_ROOM'
+export const UNLOCK_ROOM = 'UNLOCK_ROOM'
 
 // User
 export const SET_USER_PREFERENCE = 'SET_USER_PREFERENCE'

@@ -1,11 +1,12 @@
 import { createClient } from 'stanza'
-import { connect, connectionStateChanged } from '../../actions/API'
-import { leaveRoom, joinRoomSuccess, joinRoomFailed } from '../../actions/Rooms'
-import { joinCall } from '../../actions/Calls'
-import { peerOnline, peerOffline, peerUpdated } from '../../actions/Peers'
-import { getConfigURL, getAPIConfig } from '../../reducers/api'
+import Actions from '../../actions'
+// import { connect, connectionStateChanged } from '../../actions/API'
+// import { leaveRoom, joinRoomSuccess, joinRoomFailed } from '../../actions/Rooms'
+// import { joinCall } from '../../actions/Calls'
+// import { peerOnline, peerOffline, peerUpdated } from '../../actions/Peers'
+import { getConfigURL, getAPIConfig, getUserToken } from '../../reducers/api'
 import { getRoomByAddress, getRooms } from '../../reducers/rooms'
-import { getUserDisplayName } from '../../reducers/user'
+import { getUserDisplayName, getDesiredMediaTypes } from '../../reducers/user'
 import { getCallForRoom, getJoinedCalls } from '../../reducers/calls'
 import Mesh from './mesh'
 import MMUC from './mmuc'
@@ -35,7 +36,7 @@ class SingalClient {
       global.console.log('xmpp - session:started')
       this.xmpp.sendPresence()
       this.xmpp.enableKeepAlive({ interval: 90 })
-      this.dispatch(connectionStateChanged('connected'))
+      this.dispatch(Actions.connectionStateChanged('connected'))
     })
 
     this.xmpp.on('disconnected', () => {
@@ -44,12 +45,13 @@ class SingalClient {
         return
       }
 
-      this.dispatch(connectionStateChanged('disconnected'))
-      setTimeout(function () {
+      this.dispatch(Actions.connectionStateChanged('disconnected'))
+      // Reconnecting
+      setTimeout(() => {
         const state = this.getState()
         const configUrl = getConfigURL(state)
-        const userData = Selectors.getUserToken(state)
-        this.dispatch(connect(configUrl, userData))
+        const userData = getUserToken(state)
+        this.dispatch(Actions.connect(configUrl, userData))
       }, 1000 + Math.random() * 2000)
     })
 
@@ -60,30 +62,36 @@ class SingalClient {
       state = this.getState()
       room = getRoomByAddress(state, roomAddress)
 
-      await this.fetchRoomConfig(roomAddress, true)
+      global.console.log('PRES', pres)
 
-      this.dispatch(joinRoomSuccess(roomAddress, pres.from.full, pres.talkyUserInfo.roomId, pres.muc.role))
+      await this.fetchRoomConfig(roomAddress, true)
+      this.dispatch(Actions.roomUnlocked(roomAddress))
+
+      this.dispatch(Actions.joinRoomSuccess(roomAddress, pres.from.full, pres.talkyUserInfo.roomId, pres.muc.role))
       room = getRoomByAddress(state, roomAddress)
       if (room && room.autoJoinCall) {
-        this.dispatch(joinCall(roomAddress, Selectors.getDesiredMediaTypes(state, roomAddress)))
+        this.dispatch(Actions.joinCall(roomAddress, getDesiredMediaTypes(state, roomAddress)))
       }
     })
 
     this.xmpp.on('muc:failed', (pres) => {
+      global.console.log('muc:failed')
       const roomAddress = pres.from.bare
       const room = getRoomByAddress(this.getState(), roomAddress)
       if (room && room.providedPassword && !room.passwordRequired) {
         this.joinRoom(roomAddress, undefined, room.autoJoinCall)
       } else {
-        this.dispatch(joinRoomFailed(roomAddress, pres.error.condition === 'not-authorized'))
+        this.dispatch(Actions.joinRoomFailed(roomAddress, pres.error.condition === 'not-authorized'))
       }
     })
 
     this.xmpp.on('muc:error', (pres) => {
-      this.dispatch(joinRoomFailed(pres.from.bare, pres.error.condition === 'not-authorized'))
+      global.console.log('muc:error')
+      this.dispatch(Actions.joinRoomFailed(pres.from.bare, pres.error.condition === 'not-authorized'))
     })
 
     this.xmpp.on('muc:available', (pres) => {
+      global.console.log('muc:available')
       if (pres.muc.codes && pres.muc.codes.indexOf('110') >= 0) {
         // Ignore ourself
         return
@@ -92,7 +100,7 @@ class SingalClient {
       // TODO: realtime_text rtt buffer code
 
       const customerData = pres.talkyUserInfo.customerData || {}
-      this.dispatch(peerOnline(pres.from.bare, pres.from.full, {
+      this.dispatch(Actions.peerOnline(pres.from.bare, pres.from.full, {
         customerData: customerData,
         displayName: customerData.displayName || pres.nick,
         id: pres.talkyUserInfo.sessionId,
@@ -103,31 +111,34 @@ class SingalClient {
     })
 
     this.xmpp.on('muc:unavailable', (pres) => {
+      global.console.log('muc:unavailable')
       if (pres.muc.codes && pres.muc.codes.indexOf('110') >= 0) {
-        this.dispatch(leaveRoom(pres.from.bare))
+        this.dispatch(Actions.leaveRoom(pres.from.bare))
         return
       }
 
-      this.dispatch(peerOffline(pres.from.bare, pres.from.full))
+      this.dispatch(Actions.peerOffline(pres.from.bare, pres.from.full))
     })
 
     this.xmpp.on('muc:destroyed', (pres) => {
-      this.dispatch(leaveRoom(pres.from.bare))
+      global.console.log('muc:destroyed')
+      this.dispatch(Actions.leaveRoom(pres.from.bare))
     })
 
     this.xmpp.on('chat:state', (msg) => {
-      this.dispatch(peerUpdated(msg.from.full, {
+      this.dispatch(Actions.peerUpdated(msg.from.full, {
         chatState: msg.chatState
       }))
     })
 
     this.xmpp.on('attention', (msg) => {
-      this.dispatch(peerUpdated(msg.from.full, {
+      global.console.log('attention')
+      this.dispatch(Actions.peerUpdated(msg.from.full, {
         requestingAttention: true
       }))
 
       setTimeout(() => {
-        this.dispatch(peerUpdated(msg.from.full, {
+        this.dispatch(Actions.peerUpdated(msg.from.full, {
           requestingAttention: false
         }))
       }, 5000)
@@ -154,11 +165,12 @@ class SingalClient {
 
   disconnect = () => {
     this.terminating = true
-    this.dispatch(connectionStateChanged('disconnected'))
+    this.dispatch(Actions.connectionStateChanged('disconnected'))
     this.xmpp.disconnect()
   }
 
   joinRoom = (roomAddress, password, autoJoinCall) => {
+    global.console.log('joinRoom', roomAddress, password, autoJoinCall)
     const state = this.getState()
     const config = getAPIConfig(state)
     const displayName = getUserDisplayName(state)
@@ -171,7 +183,7 @@ class SingalClient {
     this.xmpp.joinRoom(roomAddress, config.id, options)
 
     if (autoJoinCall !== false) {
-      this.dispatch(joinCall(roomAddress, Selectors.getDesiredMediaTypes(state, roomAddress)))
+      this.dispatch(Actions.joinCall(roomAddress, getDesiredMediaTypes(state, roomAddress)))
     }
   }
 
@@ -180,6 +192,7 @@ class SingalClient {
   }
 
   sendRoomPresence = (roomAddress, options) => {
+    global.console.log('sendRoomPresence', roomAddress, options)
     if (!options) {
       options = {}
     }
@@ -188,7 +201,7 @@ class SingalClient {
     const displayName = getUserDisplayName(state)
     const room = getRoomByAddress(state, roomAddress)
     const call = getCallForRoom(state, roomAddress)
-    const media = Selectors.getDesiredMediaTypes(state, roomAddress)
+    const media = getDesiredMediaTypes(state, roomAddress)
 
     if (!room || !room.joined) {
       return
@@ -205,6 +218,7 @@ class SingalClient {
   }
 
   sendAllRoomsPresence = (options) => {
+    global.console.log('sendAllRoomsPresence')
     if (!options) {
       options = {}
     }
@@ -327,7 +341,7 @@ class SingalClient {
     const room = getRoomByAddress(this.getState(), roomAddress)
     if (msg.type === 'groupchat' && msg.mmuc) {
       if (room && room.selfAddress !== msg.from.full && msg.mmuc) {
-        this.dispatch(peerUpdated(msg.from.full, {
+        this.dispatch(Actions.peerUpdated(msg.from.full, {
           speaking: msg.mmuc.speaking || false
         }))
       }
